@@ -1,8 +1,7 @@
-import UploadForm from "@/components/UploadForm";
+"use client"
+
+import Welcome from "@/components/Welcome";
 
 export default function Home() {
-  return (      
-      <UploadForm/> 
-  )
-
+  return <Welcome />;
 }

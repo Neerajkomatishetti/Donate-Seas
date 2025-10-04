@@ -5,10 +5,10 @@ type Props = {
 
 const TotalDonations = ({totalDonations}:Props) => {
     return (
-      <div className="flex w-full border p-3 border-b">
+      <div className="flex w-full border-b shadow inset-shadow-secondary p-3">
         <div className="flex w-fit h-fit p-2 shadow border rounded-md">
           <h2 className="font-bold px-2">Total Donations:</h2>
-          <p>{totalDonations}/-</p>
+          <p className="font-medium">{totalDonations}/-</p>
         </div>
       </div>
     );

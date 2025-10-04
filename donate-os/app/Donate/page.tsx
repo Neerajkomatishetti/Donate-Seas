@@ -1,6 +1,9 @@
 "use client"
 
-import React, { useState } from "react";
+import { useAuth } from "@/components/AuthContext";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 type AccountInfoProps = {
   accountHolder: string;
@@ -16,7 +19,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({
   ifsc
 }) => {
   const [copied, setCopied] = useState(false);
-
+  const router = useRouter();
   const accountInfoText = `
     Account Holder: ${accountHolder}
     Account Number: ${accountNumber}
@@ -30,8 +33,8 @@ const AccountInfo: React.FC<AccountInfoProps> = ({
   };
 
   return (
-    <div className="flex flex-col w-full h-full justify-center items-center">
-      <div className="p-4 border h-fit w-[80%] rounded-lg shadow bg-white max-w-md mx-auto">
+    <div className="flex flex-col w-full h-[60%] justify-center items-center">
+      <div className="p-4 relative border h-fit w-[80%] rounded-lg shadow bg-secondary max-w-md mx-auto">
       <h2 className="text-xl font-bold mb-2 flex justify-between">
         Account Information
         <button
@@ -70,19 +73,45 @@ const AccountInfo: React.FC<AccountInfoProps> = ({
           <span className="font-bold">IFSC Code: </span>
           {ifsc}
         </div>
+        <div>
+          <Button variant="greenButton"  onClick={() => {
+            router.push("/Upload");
+          }}>Register Your Donation</Button>
+        </div>
       </div>
     </div>
   );
 };
 
 // Example use for transfer (hardcoded)
-export const TransferAccountComponent = () => (
-  <AccountInfo
-    accountHolder="Rajesh Kumar"
-    accountNumber="123456789101"
-    bankName="State Bank of India"
-    ifsc="SBIN0009999"
-  />
-);
+export const TransferAccountComponent = () => {
+  const { isLoggedIn, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !isLoggedIn) {
+      alert("Please login!");
+      const timeoutId = setTimeout(() => {
+        router.push("/");
+      }, 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isLoggedIn, loading]);
+
+  if (loading) return null; // Or show a spinner
+
+  return (
+    <>
+      {isLoggedIn && (
+        <AccountInfo
+          accountHolder="Rajesh Kumar"
+          accountNumber="123456789101"
+          bankName="State Bank of India"
+          ifsc="SBIN0009999"
+        />
+      )}
+    </>
+  );
+};
 
 export default TransferAccountComponent;

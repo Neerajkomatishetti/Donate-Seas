@@ -1,4 +1,14 @@
-import { Calendar, Home, Inbox, Search, Settings, User2Icon } from "lucide-react"
+"use client";
+
+import {
+  Calendar,
+  Home,
+  Inbox,
+  PowerOffIcon,
+  Search,
+  Settings,
+  User2Icon,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -9,17 +19,19 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { useAuth } from "./AuthContext";
+import { useRouter } from "next/navigation";
 
 // Menu items.
 const items = [
   {
     title: "Home",
-    url: "./",
+    url: "/",
     icon: Home,
   },
   {
-    title: "Inbox",
+    title: "MyDonations",
     url: "/DonationStatus",
     icon: Inbox,
   },
@@ -28,28 +40,24 @@ const items = [
     url: "/Donate",
     icon: Calendar,
   },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },{
-    title: "Admin",
-    url: "/Admin/Donations",
-    icon: User2Icon,
-  },
-]
+];
 
 export function AppSidebar() {
+  const { isLoggedIn, isAdmin, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout(); // This now handles all cleanup automatically
+    router.push("/Auth/Signin");
+  };
+
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="font-bold text-lg" >Application</SidebarGroupLabel>
+          <SidebarGroupLabel className="font-bold text-lg mb-10">
+            Application
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -62,10 +70,34 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {isLoggedIn && (
+                <SidebarMenuItem className="my-2">
+                  <SidebarMenuButton className="w-full px-2" asChild>
+                    <button onClick={handleLogout}>
+                      <PowerOffIcon />
+                      <span className="font-medium text-md">{"Logout"}</span>
+                    </button>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+              {isAdmin && (
+                <SidebarMenuItem className="my-2">
+                  <SidebarMenuButton className="w-full px-2" asChild>
+                    <button
+                      onClick={() => {
+                        router.push("/Admin/Donations");
+                      }}
+                    >
+                      <User2Icon />
+                      <span className="font-medium text-md">{"Admin"}</span>
+                    </button>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

@@ -17,6 +17,7 @@ import { ModeToggle } from "./ModeToggle"
 import { SidebarTrigger } from "./ui/sidebar"
 import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
+import { useAuth } from "./AuthContext"
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -58,9 +59,10 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function NavigationMenuMain() {
   const router = useRouter();
+  const { isLoggedIn } = useAuth();
   
   return (
-    <NavigationMenu viewport={false} className="bg-background" suppressHydrationWarning>
+    <NavigationMenu viewport={false} className="bg-background px-2" suppressHydrationWarning>
       <NavigationMenuList>
         <NavigationMenuItem>
             <SidebarTrigger/>
@@ -95,10 +97,15 @@ export function NavigationMenuMain() {
         </NavigationMenuItem> */}
       </NavigationMenuList>
       <NavigationMenuList>
-        <NavigationMenuItem>
-          <Button size={"sm"} onClick={() =>{
-            router.push("/Donate")
-          }}>Donate</Button>
+        <NavigationMenuItem className="py-2">
+          <Button size={"sm"} className="mx-2 h-8" onClick={() =>{
+            if(isLoggedIn){
+              router.push("/Donate")
+            }else{
+              router.push("/Auth/Signin")
+            }
+            
+          }}>{isLoggedIn? "Donate":"Login"}</Button>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <ModeToggle/>

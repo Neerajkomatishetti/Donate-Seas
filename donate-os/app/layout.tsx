@@ -3,8 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NavigationMenuMain } from "@/components/NavigationMenuMain";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { AuthProvider } from "@/components/AuthContext";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
+import "primereact/resources/primereact.min.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,26 +32,22 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} flex antialiased h-screen`}
       >
-        
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <AuthProvider>
             <SidebarProvider>
-              <AppSidebar/>
-               <main className="relative w-full h-screen">
-                <div className="sticky top-0">
-                  <NavigationMenuMain/>
+              <AppSidebar />
+              <main className="relative w-full h-screen">
+                <div className="sticky top-0 z-20">
+                  <NavigationMenuMain />
                 </div>
-                <div className="flex w-full h-full justify-center">
+                <div className="flex w-full h-[90%] justify-center">
                   {children}
                 </div>
               </main>
             </SidebarProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

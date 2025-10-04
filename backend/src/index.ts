@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { userRouter } from './routes/user'
-import { blogRouter } from './routes/blog'
+import { donateRouter } from './routes/donations'
 import { cors } from 'hono/cors'
 
 const app = new Hono()
