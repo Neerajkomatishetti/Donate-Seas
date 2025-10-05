@@ -6,11 +6,9 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { useState } from "react";
-import TotalDonations from "./TotalDonations";
 import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
-import { join } from "path";
 import { useAuth } from "./AuthContext";
 
 const supabaseUrl = "https://gekzkmggkbzsqzhglmgw.supabase.co";
@@ -29,10 +27,10 @@ export const UploadForm = () => {
   const router = useRouter();
   const { token } = useAuth();
   const [donateWithName, setDonateWithName] = useState(false);
-  const [donations, setDonations] = useState(6000);
   const [formData, setFormData] = useState<formTypes>({
     Amount: 0,
   });
+
 
   async function uploadFile(file: File) {
     const fileExt = file.name.split(".").pop();
@@ -75,7 +73,7 @@ export const UploadForm = () => {
     const response = await axios.post(
       `${BACKEND_URL}/donate`,
       {
-        name: formData.username,
+        name: formData.username || "Anonymous",
         amount: formData.Amount,
         imgurl: uploadedUrl,
         Status: false,
@@ -97,7 +95,6 @@ export const UploadForm = () => {
 
   return (
     <div className="py-3">
-      <TotalDonations totalDonations={donations} />
       <div className="flex justify-center p-5 w-full">
         <div className="[&>*]:my-3 w-[80vw] md:w-[35vw] bg-secondary p-4 rounded-lg">
           <RadioGroup defaultValue="Anonymous" className="flex mb-3">

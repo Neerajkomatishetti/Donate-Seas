@@ -14,7 +14,7 @@ const Upload = () => {
         alert("Please login!")
         router.push('/')
     }
-  },[])
+  },[isLoggedIn, router])
 
   return (
       <UploadForm />

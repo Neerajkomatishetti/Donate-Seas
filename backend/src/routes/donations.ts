@@ -144,6 +144,31 @@ donateRouter.get("/bulk", async (c) => {
 
 })
 
+donateRouter.get("/carousal", async (c) => {
+  const Client = new PrismaClient({
+    datasourceUrl: c.env.ACC_DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const topDonations = await Client.donation.findMany({
+      take: 5,
+    });
+    
+
+    return c.json({
+      message:"success",
+      topDonations:topDonations
+    })
+  }catch (e) {
+    return c.json(
+      {
+        error:e
+      }
+    )
+  }
+
+})
+
 donateRouter.put("/Approve", async (c) => {
   const Client = new PrismaClient({
     datasourceUrl: c.env.ACC_DATABASE_URL,

@@ -35,3 +35,12 @@ model Donation {
   author   User     @relation(fields: [authorId], references: [id])
   authorId  String
 }
+
+model BankAccount {
+  id             Int      @id @default(autoincrement())
+  accountHolder  String
+  accountNumber  String   @unique
+  bankName       String
+  ifscCode       String
+  createdAt      DateTime @default(now())
+}

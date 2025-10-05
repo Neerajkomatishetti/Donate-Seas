@@ -5,8 +5,6 @@ import {
   Home,
   Inbox,
   PowerOffIcon,
-  Search,
-  Settings,
   User2Icon,
 } from "lucide-react";
 

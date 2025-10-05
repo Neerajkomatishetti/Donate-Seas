@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Image } from "primereact/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+// import { token } 
 
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -17,16 +18,12 @@ export type DonationProps = {
   createdAt: string;
 };
 
-type TokenPayload = {
-  id: string;
-  name: string;
-};
 
 const Donations = () => {
   const [donations, setDonations] = useState([]);
-  const token = localStorage.getItem('token')
+  const token = typeof window !== "undefined" ? localStorage.getItem('token') : null
 
-  const fetchdonations = () =>{
+  const fetchdonations = useCallback(() =>{
     if (token) {
       axios
         .get(`${BACKEND_URL}/donate/bulk`, {
@@ -38,11 +35,11 @@ const Donations = () => {
           setDonations(response.data.donations);
         });
     }
-  }
+  },[token])
 
   useEffect(() => {
     fetchdonations();
-  }, [token, setDonations]);
+  }, [fetchdonations]);
 
   return (
     <div className="flex flex-col w-full items-center h-full px-5">

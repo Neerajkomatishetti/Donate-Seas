@@ -52,13 +52,14 @@ const Auth = ({ AuthType }: { AuthType: "Signin" | "Signup" }) => {
       } else {
         throw new Error(response.data?.message || "Authentication failed");
       }
-    } catch (error: any) {
-      console.error("Authentication error:", error);
-      setError(
-        error.response?.data?.message ||
-          error.message ||
-          "Authentication failed"
-      );
+    } catch (err: unknown) {
+      console.error("Authentication error:", err);
+      const message =
+        typeof err === "object" && err !== null && "response" in err
+          ? // @ts-expect-error narrowing axios error shape
+            err.response?.data?.message
+          : (err as Error).message;
+      setError(message || "Authentication failed");
     } finally {
       setIsLoading(false);
     }

@@ -3,7 +3,6 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "./ui/button";
-import axios from "axios";
 
 export const AccountUpdateCpnt = () => {
     return <>
@@ -17,9 +16,7 @@ export const AccountUpdateCpnt = () => {
             <Input/>
             <Label>IFSC</Label>
             <Input/>
-            <Button onClick={async () =>{
-                const response = await axios.put('/account/') //TODO_ACC
-            }}>Submit</Button>
+            <Button>Submit</Button>
         </div>
     </div>
     </>

@@ -11,7 +11,7 @@ export default function Welcome() {
         <div className="flex w-full flex-col items-center  h-full  [&>*]:my-2 ">
  
             <Image src="/DonateOs_Banner.png" width={380} height={100} priority={true} className="w-auto max-h-[50%] mask-x-from-90%" alt="Banner" />
-            <div className="flex justify-end w-full ">
+            <div className="flex justify-center w-full ">
                 <DonateCircular/>
             </div>
             

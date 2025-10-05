@@ -96,7 +96,7 @@ export const TransferAccountComponent = () => {
       }, 1000);
       return () => clearTimeout(timeoutId);
     }
-  }, [isLoggedIn, loading]);
+  }, [isLoggedIn, loading, router]);
 
   if (loading) return null; // Or show a spinner
 

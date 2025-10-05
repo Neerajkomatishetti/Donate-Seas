@@ -6,8 +6,9 @@ import axios from "axios";
 import { Image } from "primereact/image";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
-import { CheckIcon, CrossIcon, SquareCheck, TicketCheckIcon, X} from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
+import { SquareCheck, X } from "lucide-react";
+import TotalDonations from "@/components/TotalDonations";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -22,17 +23,17 @@ export const DonationStatus = () => {
   const router = useRouter();
   const { isLoggedIn, loading, token } = useAuth();
   const [donations, setDonations] = useState([]);
+  const [userDonations, setUserDonations] = useState(0);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  const fetch = async () => {
+  const fetchDonations = useCallback(async () => {
     const response = await axios.get(`${BACKEND_URL}/donate/mydonations`, {
       headers: {
         Authorization: token,
       },
     });
-
     return response.data;
-  };
+  }, [token]);
 
   useEffect(() => {
     if (!loading && !isLoggedIn) {
@@ -40,21 +41,31 @@ export const DonationStatus = () => {
       router.push("/");
     }
 
-    // Only fetch if data hasn't been loaded yet
+    axios
+      .get(`${BACKEND_URL}/me`, {
+        headers: {
+          Authorization: token,
+        },
+      })
+      .then((response) => {
+        setUserDonations(response.data.user.userDonations);
+      });
+
     if (!isDataLoaded && isLoggedIn) {
-      fetch().then((data) => {
+      fetchDonations().then((data) => {
         setDonations(data.donations);
         setIsDataLoaded(true);
-        console.log(donations);
       });
     }
-  }, [loading, isLoggedIn, isDataLoaded]);
-
-  useEffect(() => {});
+  }, [loading, isLoggedIn, isDataLoaded, fetchDonations, router]);
 
   return (
     <>
       <div className="flex flex-col w-full h-auto overflow-y-scroll hide-scrollbar items-center mt-5 px-3">
+        <div className="w-full md:max-w-[40%]">
+          <TotalDonations totalDonations={userDonations} />
+        </div>
+
         <div className="flex justify-between w-full md:max-w-[40%] h-fit">
           <h1 className="flex items-center text-lg font-bold">Donations</h1>
           <Button
@@ -87,12 +98,21 @@ export const DonationStatus = () => {
                 <p className="font-mono text-sm"> ₹{donation.amount}</p>
               </div>
               <div>
-                {!donation.Status? <p className="pb-2 flex">
-                  <X color="#b12006" strokeWidth={2.75} />"Pending"
-                </p>
-                : <p className="flex pb-2">
-                  <SquareCheck color="white" strokeWidth={2.75} fill="#1bd051" />"Verified"
-                </p>}
+                {!donation.Status ? (
+                  <p className="pb-2 flex">
+                    + <X color="#b12006" strokeWidth={2.75} />
+                    Pending
+                  </p>
+                ) : (
+                  <p className="flex pb-2">
+                    <SquareCheck
+                      color="white"
+                      strokeWidth={2.75}
+                      fill="#1bd051"
+                    />
+                    Verified
+                  </p>
+                )}
                 <p className="font-mono text-xs text-gray-secondary">
                   {donation.createdAt}
                 </p>
