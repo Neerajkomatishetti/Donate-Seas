@@ -13,7 +13,7 @@ export type DonationProps = {
   name: string;
   amount: number;
   imgurl: string;
-  Status: string;
+  Status: boolean;
   createdAt: string;
 };
 
@@ -26,17 +26,26 @@ const Donations = () => {
   const [donations, setDonations] = useState([]);
   const token = localStorage.getItem('token')
 
+  const fetchdonations = () =>{
+    if (token) {
+      axios
+        .get(`${BACKEND_URL}/donate/bulk`, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then((response) => {
+          setDonations(response.data.donations);
+        });
+    }
+  }
+
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/donate/bulk`, {
-        headers:{
-          Authorization:token 
-      }})
-      .then((response) => {
-        setDonations(response.data.donations);
-      });
-  }, []);
+    fetchdonations();
+  }, [token, setDonations]);
+
   return (
-    <div className="flex flex-col w-full h-full px-5">
+    <div className="flex flex-col w-full items-center h-full px-5">
       <p className="flex w-full justify-center text-red-700">
         this will not be accessable by users in the future only admins are
         allowed!
@@ -44,7 +53,7 @@ const Donations = () => {
       {donations.map((donation: DonationProps) => (
         <div
           key={donation.id}
-          className="flex flex-col px-4 p-2 w-full border my-2 bg-secondary rounded-lg"
+          className="flex flex-col px-4 p-2 w-full md:w-[40%] border my-2 bg-secondary rounded-lg"
         >
           <div className="card flex justify-center max-h-[30vh] overflow-clip ">
             <Image
@@ -61,20 +70,30 @@ const Donations = () => {
               {donation.name || "Anonymous"}
             </h2>
             <Button
-              onClick={() => {
-                axios.put(`${BACKEND_URL}/donate/Approve`,{
-                  data:{
-                    id:donation.id
-                  }
-                }, {
-                  headers: {
-                    Authorization: localStorage.getItem("token"),
+              onClick={async () => {
+                const response = await axios.put(
+                  `${BACKEND_URL}/donate/Approve`,
+                  {
+                    data: {
+                      id: donation.id,
+                      amount: donation.amount,
+                    },
                   },
-                });
+                  {
+                    headers: {
+                      Authorization: token,
+                    },
+                  }
+                );
+
+                if(response.status == 200){
+                  fetchdonations();
+                }
               }}
               className="h-6 mb-2 px- hover:cursor-pointer"
+              disabled = {donation.Status}
             >
-              Approve
+              {donation.Status? "Approved" : "Approve"}
             </Button>
           </div>
           <div className="flex justify-between">
