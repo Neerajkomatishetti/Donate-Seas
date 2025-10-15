@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { SquareCheck, X } from "lucide-react";
 import TotalDonations from "@/components/TotalDonations";
+import { DonationSkeleton } from "@/components/DonationSkeletons";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -52,12 +53,14 @@ export const DonationStatus = () => {
       });
 
     if (!isDataLoaded && isLoggedIn) {
-      fetchDonations().then((data) => {
-        setDonations(data.donations);
-        setIsDataLoaded(true);
-      });
-    }
-  }, [loading, isLoggedIn, isDataLoaded, fetchDonations, router]);
+      setTimeout(()=>{
+        fetchDonations().then((data) => {
+          setDonations(data.donations);
+          setIsDataLoaded(true);
+        });
+      }, 2000)
+
+  }}, [loading, isLoggedIn, isDataLoaded, fetchDonations, router]);
 
   return (
     <>
@@ -77,7 +80,7 @@ export const DonationStatus = () => {
             New Donation
           </Button>
         </div>
-        {donations.map((donation: TransactionProps, idx) => (
+        {isDataLoaded?  donations.map((donation: TransactionProps, idx) => (
           <div
             key={idx}
             className="flex flex-col px-4 py-2 w-full md:w-[40%] border my-3 rounded-lg bg-secondary"
@@ -119,7 +122,7 @@ export const DonationStatus = () => {
               </div>
             </div>
           </div>
-        ))}
+        )): <DonationSkeleton/>}
       </div>
     </>
   );

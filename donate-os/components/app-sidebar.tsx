@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Calendar,
-  Home,
-  Inbox,
-  PowerOffIcon,
-  User2Icon,
-} from "lucide-react";
+import { Calendar, Home, Inbox, PowerOffIcon, User2Icon } from "lucide-react";
 
 import {
   Sidebar,
@@ -29,11 +23,6 @@ const items = [
     icon: Home,
   },
   {
-    title: "MyDonations",
-    url: "/DonationStatus",
-    icon: Inbox,
-  },
-  {
     title: "Donate",
     url: "/Donate",
     icon: Calendar,
@@ -54,20 +43,51 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="font-bold text-lg mb-10">
-            Application
+           DonateOS
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem className="my-2" key={item.title}>
                   <SidebarMenuButton className="w-full px-2" asChild>
-                    <a href={item.url}>
+                    <button
+                      onClick={() => {
+                        if (isAdmin) {
+                          router.push(item.url);
+                          return;
+                        } else {
+                          if (item.title != "Home") {
+                            alert("please Login!");
+                            router.push("/");
+                          } else {
+                            router.push("/");
+                          }
+                        }
+                      }}
+                    >
                       <item.icon />
                       <span className="font-medium text-md">{item.title}</span>
-                    </a>
+                    </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem className="my-2">
+                <SidebarMenuButton className="w-full px-2" asChild>
+                  <button
+                    onClick={() => {
+                      if (isAdmin) {
+                        router.push("/DonationStatus");
+                      } else {
+                        alert("Please Login!");
+                        router.push("/");
+                      }
+                    }}
+                  >
+                    <Inbox />
+                    <span className="font-medium text-md">{"MyDonations"}</span>
+                  </button>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               {isLoggedIn && (
                 <SidebarMenuItem className="my-2">
                   <SidebarMenuButton className="w-full px-2" asChild>

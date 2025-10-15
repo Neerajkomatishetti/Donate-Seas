@@ -2,7 +2,6 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
 import { PrismaClient } from "../generated/prisma/edge";
 import { verify } from "hono/jwt";
-import { use } from "hono/jsx";
 
 interface userProps {
     id:string

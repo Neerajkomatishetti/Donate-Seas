@@ -22,7 +22,7 @@ donateRouter.use("/*", async (c, next) => {
   try {
     console.log(AuthHeader);
     console.log("hi there hello sorry");
-    const secret = c.env.JWT_SECRET
+    const secret = c.env.JWT_SECRET;
     const user = await verify(AuthHeader, secret);
     console.log(user);
     console.log("hi there 2");
@@ -45,7 +45,7 @@ donateRouter.use("/*", async (c, next) => {
     return c.json(
       {
         message: "Error in Middlewares!",
-        error:e
+        error: e,
       },
       403
     );
@@ -61,10 +61,10 @@ donateRouter.post("/", async (c) => {
   const authorId = c.get("userId");
 
   const Zodresult = DonationInput.safeParse(body);
-  console.log("neeee")
+  console.log("neeee");
 
-  if(Zodresult.success){
-    console.log("neeeraj")
+  if (Zodresult.success) {
+    console.log("neeeraj");
     const Donation = await Client.donation.create({
       data: {
         name: body.name,
@@ -72,7 +72,7 @@ donateRouter.post("/", async (c) => {
         imgurl: body.imgurl,
         Status: body.Status,
         authorId: authorId,
-        createdAt: body.createdAt
+        createdAt: body.createdAt,
       },
     });
 
@@ -87,40 +87,37 @@ donateRouter.post("/", async (c) => {
     return c.json(
       {
         message: "invalid inputs",
-        error:Zodresult.error.issues
+        error: Zodresult.error.issues,
       },
       400
     );
   }
 });
 
-donateRouter.get('/mydonations', async (c) => {
+donateRouter.get("/mydonations", async (c) => {
   const Client = new PrismaClient({
     datasourceUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
-  const userId = c.get('userId')
+  const userId = c.get("userId");
 
   try {
     const donations = await Client.donation.findMany({
-      where:{
-        authorId:userId
-      }
+      where: {
+        authorId: userId,
+      },
     });
 
     return c.json({
-      message:"success",
-      donations:donations
-    })
-  }catch (e) {
-    return c.json(
-      {
-        error:e
-      }
-    )
+      message: "success",
+      donations: donations,
+    });
+  } catch (e) {
+    return c.json({
+      error: e,
+    });
   }
-
-})
+});
 
 donateRouter.get("/bulk", async (c) => {
   const Client = new PrismaClient({
@@ -131,43 +128,15 @@ donateRouter.get("/bulk", async (c) => {
     const donations = await Client.donation.findMany();
 
     return c.json({
-      message:"success",
-      donations:donations
-    })
-  }catch (e) {
-    return c.json(
-      {
-        error:e
-      }
-    )
-  }
-
-})
-
-donateRouter.get("/carousal", async (c) => {
-  const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  try {
-    const topDonations = await Client.donation.findMany({
-      take: 5,
+      message: "success",
+      donations: donations,
     });
-    
-
+  } catch (e) {
     return c.json({
-      message:"success",
-      topDonations:topDonations
-    })
-  }catch (e) {
-    return c.json(
-      {
-        error:e
-      }
-    )
+      error: e,
+    });
   }
-
-})
+});
 
 donateRouter.put("/Approve", async (c) => {
   const Client = new PrismaClient({
@@ -175,45 +144,46 @@ donateRouter.put("/Approve", async (c) => {
   }).$extends(withAccelerate());
 
   try {
-
     const body = await c.req.json();
-    const donation_id = body.data.id
-    console.log(donation_id)
+    const donation_id = body.data.id;
+    console.log(donation_id);
 
     const Admin = await Client.user.findUnique({
-      where:{
-        id:c.get('userId')
-      }
-    })
+      where: {
+        id: c.get("userId"),
+      },
+    });
 
-    console.log("hello")
+    console.log("hello");
     console.log(Admin);
 
-    if(Admin?.isAdmin){
-     await Client.donation.update({
+    if (Admin?.isAdmin) {
+      await Client.donation.update({
         where: {
-          id:donation_id,
+          id: donation_id,
         },
         data: {
           Status: true,
         },
       });
 
-      console.log("neer")
-  
-      return c.json({
-        message: "success"
-      });
-    }else {
-      return c.json({
-        message:"Not allowed",
-      })
-    }
+      console.log("neer");
 
+      return c.json({
+        message: "success",
+      });
+    } else {
+      return c.json({
+        message: "Not allowed",
+      });
+    }
   } catch (e) {
-    return c.json({
-      error: e,
-    },403);
+    return c.json(
+      {
+        error: e,
+      },
+      403
+    );
   }
 });
 
@@ -223,42 +193,41 @@ donateRouter.get("/A", async (c) => {
   }).$extends(withAccelerate());
 
   try {
-
-
-    const params = getQueryParams
+    const params = getQueryParams;
     const body = await c.req.json();
-    const donation_id = params.arguments.id
+    const donation_id = params.arguments.id;
 
     const Admin = await Client.user.findUnique({
-      where:{
-        id:c.get('userId')
-      }
-    })
+      where: {
+        id: c.get("userId"),
+      },
+    });
 
-    if(Admin?.isAdmin){
+    if (Admin?.isAdmin) {
       const donations = await Client.donation.update({
         where: {
-          id:donation_id,
+          id: donation_id,
         },
         data: {
           Status: true,
         },
       });
-  
+
       return c.json({
         message: "success",
         donations: donations,
       });
-    }else {
-      return c.json({
-        message:"Not allowed",
-      }, 403)
+    } else {
+      return c.json(
+        {
+          message: "Not allowed",
+        },
+        403
+      );
     }
-
   } catch (e) {
     return c.json({
       error: e,
     });
   }
 });
-

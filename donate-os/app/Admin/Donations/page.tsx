@@ -1,5 +1,6 @@
 "use client";
 
+import { DonationSkeleton } from "@/components/DonationSkeletons";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Image } from "primereact/image";
@@ -22,6 +23,7 @@ export type DonationProps = {
 const Donations = () => {
   const [donations, setDonations] = useState([]);
   const token = typeof window !== "undefined" ? localStorage.getItem('token') : null
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchdonations = useCallback(() =>{
     if (token) {
@@ -39,6 +41,7 @@ const Donations = () => {
 
   useEffect(() => {
     fetchdonations();
+    setLoading(false)
   }, [fetchdonations]);
 
   return (
@@ -47,7 +50,7 @@ const Donations = () => {
         this will not be accessable by users in the future only admins are
         allowed!
       </p>
-      {donations.map((donation: DonationProps) => (
+      {!loading ? donations.map((donation: DonationProps) => (
         <div
           key={donation.id}
           className="flex flex-col px-4 p-2 w-full md:w-[40%] border my-2 bg-secondary rounded-lg"
@@ -105,7 +108,7 @@ const Donations = () => {
             </div>
           </div>
         </div>
-      ))}
+      )): <DonationSkeleton/>}
     </div>
   );
 };
