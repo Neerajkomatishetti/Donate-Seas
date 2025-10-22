@@ -43,7 +43,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="font-bold text-lg mb-10">
-           DonateOS
+            DonateOS
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -52,7 +52,7 @@ export function AppSidebar() {
                   <SidebarMenuButton className="w-full px-2" asChild>
                     <button
                       onClick={() => {
-                        if (isAdmin) {
+                        if (isLoggedIn) {
                           router.push(item.url);
                           return;
                         } else {
@@ -75,7 +75,7 @@ export function AppSidebar() {
                 <SidebarMenuButton className="w-full px-2" asChild>
                   <button
                     onClick={() => {
-                      if (isAdmin) {
+                      if (isLoggedIn) {
                         router.push("/DonationStatus");
                       } else {
                         alert("Please Login!");
