@@ -72,6 +72,7 @@ export const DonationStatus = () => {
         <div className="flex justify-between w-full md:max-w-[40%] h-fit">
           <h1 className="flex items-center text-lg font-bold">Donations</h1>
           <Button
+          className="bg-green-600"
             variant="greenButton"
             onClick={() => {
               router.push("/Donate");
@@ -83,7 +84,7 @@ export const DonationStatus = () => {
         {isDataLoaded?  donations.map((donation: TransactionProps, idx) => (
           <div
             key={idx}
-            className="flex flex-col px-4 py-2 w-full md:w-[40%] border my-3 rounded-lg bg-secondary"
+            className="flex flex-col px-4 py-2  shadow w-full md:w-[40%] border my-3 rounded-lg bg-secondary"
           >
             <div className="card flex justify-center max-h-[30vh] overflow-clip ">
               <Image

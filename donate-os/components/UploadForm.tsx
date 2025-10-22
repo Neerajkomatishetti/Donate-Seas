@@ -30,6 +30,7 @@ export const UploadForm = () => {
   const [formData, setFormData] = useState<formTypes>({
     Amount: 0,
   });
+  const [pending, setPending] = useState(false);
 
 
   async function uploadFile(file: File) {
@@ -67,6 +68,7 @@ export const UploadForm = () => {
     const timestamp = Date.now();
     const dateObj = new Date(timestamp);
     const createdAt = dateObj.toLocaleDateString();
+    setPending(true)
 
     console.log(createdAt);
 
@@ -87,6 +89,7 @@ export const UploadForm = () => {
     );
 
     if (response.data) {
+      setPending(false)
       router.push("/DonationStatus");
     } else {
       alert("error occured during uploading the image!");
@@ -160,7 +163,9 @@ export const UploadForm = () => {
               });
             }}
           />
-          <Button onClick={handleSubmit}>Send</Button>
+          <Button disabled={pending} onClick={()=>{
+            handleSubmit();
+          }}>Send</Button>
         </div>
       </div>
     </div>

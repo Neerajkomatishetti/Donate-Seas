@@ -37,7 +37,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({
       <div className="p-4 relative border h-fit w-[80%] rounded-lg shadow bg-secondary max-w-md mx-auto">
       <h2 className="text-xl font-bold mb-2 flex justify-between">
         Account Information
-        <button
+       {!copied && (<button
           className="ml-2 p-1 hover:bg-gray-100 rounded"
           title="Copy info"
           onClick={handleCopy}
@@ -52,7 +52,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({
             <rect x="9" y="9" width="13" height="13" rx="2" fill="#fff" stroke="#4B5563" strokeWidth="1.5"/>
             <rect x="3" y="3" width="13" height="13" rx="2" stroke="#4B5563" strokeWidth="1.5"/>
           </svg>
-        </button>
+        </button>)}
         {copied && (
           <span className="ml-2 text-green-600 text-sm font-medium">Copied!</span>
         )}

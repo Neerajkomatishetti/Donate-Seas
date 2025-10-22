@@ -3,9 +3,8 @@
 A full-stack donation management platform:
 
 - Backend: Cloudflare Workers + Hono, Prisma (Accelerate) with PostgreSQL
-- Frontend: Next.js 15 App Router, Tailwind CSS, Radix UI
-
-## Monorepo Structure
+- Frontend: Next.js 15 App Router, Tailwind CSS, Shadcn
+## Repo Structure
 
 ```
 Donate-Seas/
@@ -35,6 +34,32 @@ Donate-Seas/
 cd Donate-Seas/backend && npm install
 cd ../donate-os && npm install
 ```
+
+## IMAGES
+### Home page
+<img src="./Public/Screenshot 2025-10-22 104250.png">
+
+### Donation
+<img src="./Public/Screenshot 2025-10-22 104302.png">
+
+### User Donations(Loading)
+<img src="./Public/Screenshot 2025-10-22 104312.png">
+
+### Donations(user)
+<img src="./Public/Screenshot 2025-10-22 104317.png">
+
+### Donations(Admin)
+<img src="./Public/Screenshot 2025-10-22 104332.png">
+
+### Login
+<img src="./Public/Screenshot 2025-10-22 104350.png">
+
+### Signup
+<img src="./Public/Screenshot 2025-10-22 104402.png">
+
+### Donation Registration
+<img src="./Public/Screenshot 2025-10-22 104428.png">
+
 
 ### 2) Environment & Config
 

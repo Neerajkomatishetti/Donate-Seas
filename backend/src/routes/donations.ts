@@ -158,7 +158,7 @@ donateRouter.put("/Approve", async (c) => {
     console.log(Admin);
 
     if (Admin?.isAdmin) {
-      await Client.donation.update({
+      const donation = await Client.donation.update({
         where: {
           id: donation_id,
         },
@@ -167,7 +167,16 @@ donateRouter.put("/Approve", async (c) => {
         },
       });
 
-      console.log("neer");
+      await Client.user.update({
+        where: {
+          id: donation.authorId,
+        },
+        data: {
+          userDonations:{
+            increment:donation.amount
+          }
+        },
+      });
 
       return c.json({
         message: "success",
