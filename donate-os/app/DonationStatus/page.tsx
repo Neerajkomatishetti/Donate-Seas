@@ -60,7 +60,7 @@ export const DonationStatus = () => {
         });
       }, 2000)
 
-  }}, [loading, isLoggedIn, isDataLoaded, fetchDonations, router]);
+  }}, [loading, isLoggedIn, isDataLoaded, fetchDonations, router, token]);
 
   return (
     <>

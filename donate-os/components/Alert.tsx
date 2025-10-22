@@ -15,7 +15,7 @@ import {
           <AlertDialogHeader>
             <AlertDialogTitle>UnAuthorized!</AlertDialogTitle>
             <AlertDialogDescription>
-              You're not logged in Please login!
+              {"You're not logged in Please login!"}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
