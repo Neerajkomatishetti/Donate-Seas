@@ -4,9 +4,9 @@ import { PrismaClient } from "../generated/prisma/edge";
 import { verify } from "hono/jwt";
 
 interface userProps {
-    id:string
-    name:string
-    userDonations:number
+  id: string;
+  name: string;
+  userDonations: number;
 }
 
 export const meRouter = new Hono<{
@@ -21,28 +21,25 @@ export const meRouter = new Hono<{
 }>();
 
 meRouter.use("/*", async (c, next) => {
-  const AuthHeader = c.req.header("Authorization") || "";
-
+  const authHeader = c.req.header("Authorization") || "";
+  const token = authHeader;
   try {
-    console.log(AuthHeader);
-    console.log("hi there hello sorry");
     const secret = c.env.JWT_SECRET;
-    const user = await verify(AuthHeader, secret);
-    console.log(user);
-    console.log("hi there 2");
+    const user = await verify(token, secret, "HS256");
+
     if (user) {
       const id = user.id as string;
       const username = user.name as string;
-      console.log(id);
       c.set("userId", id);
       c.set("username", username);
+      
       return await next();
     } else {
       return c.json(
         {
           message: "Not Logged In",
         },
-        403
+        403,
       );
     }
   } catch (e) {
@@ -51,14 +48,14 @@ meRouter.use("/*", async (c, next) => {
         message: "Error in Middlewares!",
         error: e,
       },
-      403
+      403,
     );
   }
 });
 
 meRouter.get("/", async (c) => {
   const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
+    accelerateUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
   const userId = c.get("userId");
@@ -69,16 +66,16 @@ meRouter.get("/", async (c) => {
       },
     });
 
-    const userDetails:userProps = {
-        id:user?.id || "",
-        name:user?.name || "",
-        userDonations:user?.userDonations || 0
-    }
+    const userDetails: userProps = {
+      id: user?.id || "",
+      name: user?.name || "",
+      userDonations: user?.userDonations || 0,
+    };
 
     if (user) {
       c.status(200);
       return c.json({
-        user:userDetails
+        user: userDetails,
       });
     } else {
       c.status(400);

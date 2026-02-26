@@ -23,7 +23,7 @@ donateRouter.use("/*", async (c, next) => {
     console.log(AuthHeader);
     console.log("hi there hello sorry");
     const secret = c.env.JWT_SECRET;
-    const user = await verify(AuthHeader, secret);
+    const user = await verify(AuthHeader, secret, "HS256");
     console.log(user);
     console.log("hi there 2");
     if (user) {
@@ -38,7 +38,7 @@ donateRouter.use("/*", async (c, next) => {
         {
           message: "Not Logged In",
         },
-        403
+        403,
       );
     }
   } catch (e) {
@@ -47,14 +47,14 @@ donateRouter.use("/*", async (c, next) => {
         message: "Error in Middlewares!",
         error: e,
       },
-      403
+      403,
     );
   }
 });
 
 donateRouter.post("/", async (c) => {
   const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
+    accelerateUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
   const body = await c.req.json();
@@ -70,7 +70,7 @@ donateRouter.post("/", async (c) => {
         name: body.name,
         amount: body.amount,
         imgurl: body.imgurl,
-        Status: body.Status,
+        status: body.status || "PENDING",
         authorId: authorId,
         createdAt: body.createdAt,
       },
@@ -81,7 +81,7 @@ donateRouter.post("/", async (c) => {
         message: "success",
         id: Donation.id,
       },
-      200
+      200,
     );
   } else {
     return c.json(
@@ -89,14 +89,14 @@ donateRouter.post("/", async (c) => {
         message: "invalid inputs",
         error: Zodresult.error.issues,
       },
-      400
+      400,
     );
   }
 });
 
 donateRouter.get("/mydonations", async (c) => {
   const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
+    accelerateUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
   const userId = c.get("userId");
@@ -121,15 +121,35 @@ donateRouter.get("/mydonations", async (c) => {
 
 donateRouter.get("/bulk", async (c) => {
   const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
+    accelerateUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
+  const status = c.req.query("status") as any;
+  const take = Number(c.req.query("take")) || 10;
+  const cursor = c.req.query("cursor");
+
   try {
-    const donations = await Client.donation.findMany();
+    const donations = await Client.donation.findMany({
+      where: status ? { status } : {},
+      take: take,
+      ...(cursor && {
+        skip: 1,
+        cursor: {
+          id: cursor,
+        },
+      }),
+      orderBy: {
+        id: "asc",
+      },
+    });
+
+    const nextCursor =
+      donations.length === take ? donations[donations.length - 1].id : null;
 
     return c.json({
       message: "success",
       donations: donations,
+      nextCursor: nextCursor,
     });
   } catch (e) {
     return c.json({
@@ -140,7 +160,7 @@ donateRouter.get("/bulk", async (c) => {
 
 donateRouter.put("/Approve", async (c) => {
   const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
+    accelerateUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
   try {
@@ -163,7 +183,7 @@ donateRouter.put("/Approve", async (c) => {
           id: donation_id,
         },
         data: {
-          Status: true,
+          status: "ACCEPTED",
         },
       });
 
@@ -172,9 +192,9 @@ donateRouter.put("/Approve", async (c) => {
           id: donation.authorId,
         },
         data: {
-          userDonations:{
-            increment:donation.amount
-          }
+          userDonations: {
+            increment: donation.amount,
+          },
         },
       });
 
@@ -191,14 +211,57 @@ donateRouter.put("/Approve", async (c) => {
       {
         error: e,
       },
-      403
+      403,
+    );
+  }
+});
+
+donateRouter.put("/Reject", async (c) => {
+  const Client = new PrismaClient({
+    accelerateUrl: c.env.ACC_DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const body = await c.req.json();
+    const donation_id = body.data.id;
+
+    const Admin = await Client.user.findUnique({
+      where: {
+        id: c.get("userId"),
+      },
+    });
+
+    if (Admin?.isAdmin) {
+      await Client.donation.update({
+        where: {
+          id: donation_id,
+        },
+        data: {
+          status: "REJECTED",
+        },
+      });
+
+      return c.json({
+        message: "success",
+      });
+    } else {
+      return c.json({
+        message: "Not allowed",
+      });
+    }
+  } catch (e) {
+    return c.json(
+      {
+        error: e,
+      },
+      403,
     );
   }
 });
 
 donateRouter.get("/A", async (c) => {
   const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
+    accelerateUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
   try {
@@ -231,7 +294,7 @@ donateRouter.get("/A", async (c) => {
         {
           message: "Not allowed",
         },
-        403
+        403,
       );
     }
   } catch (e) {

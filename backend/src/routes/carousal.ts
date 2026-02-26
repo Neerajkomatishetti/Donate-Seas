@@ -15,11 +15,14 @@ export const carousalRouter = new Hono<{
 
 carousalRouter.get("/", async (c) => {
   const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
+    accelerateUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
   try {
     const topDonations = await Client.donation.findMany({
+      where: {
+        status: "ACCEPTED",
+      },
       take: 5,
     });
 

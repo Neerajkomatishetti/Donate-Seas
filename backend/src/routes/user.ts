@@ -13,7 +13,7 @@ export const userRouter = new Hono<{
 
 userRouter.post("/Signup", async (c) => {
   const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
+    accelerateUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
   console.log(c.env.ACC_DATABASE_URL);
@@ -49,14 +49,15 @@ userRouter.post("/Signup", async (c) => {
           id: user.id,
           name: user.name,
         },
-        c.env.JWT_SECRET
+        c.env.JWT_SECRET,
+        "HS256",
       );
       return c.json(
         {
           token: token,
-          isAdmin:user.isAdmin,
+          isAdmin: user.isAdmin,
         },
-        200
+        200,
       );
     } catch (e) {
       return c.json(
@@ -64,7 +65,7 @@ userRouter.post("/Signup", async (c) => {
           message: "error while signing up",
           error: e,
         },
-        400
+        400,
       );
     }
   } else {
@@ -72,14 +73,14 @@ userRouter.post("/Signup", async (c) => {
       {
         errors: Zodresult.error.issues[0].message,
       },
-      400
+      400,
     );
   }
 });
 
 userRouter.post("/Signin", async (c) => {
   const Client = new PrismaClient({
-    datasourceUrl: c.env.ACC_DATABASE_URL,
+    accelerateUrl: c.env.ACC_DATABASE_URL,
   }).$extends(withAccelerate());
 
   const body = await c.req.json();
@@ -100,13 +101,14 @@ userRouter.post("/Signin", async (c) => {
             id: user.id,
             name: user.name,
           },
-          c.env.JWT_SECRET
+          c.env.JWT_SECRET,
+          "HS256",
         );
         c.status(200);
-        return c.json({ 
-            token: token,
-            isAdmin:user.isAdmin
-         });
+        return c.json({
+          token: token,
+          isAdmin: user.isAdmin,
+        });
       } else {
         c.status(400);
         return c.json({
@@ -117,7 +119,7 @@ userRouter.post("/Signin", async (c) => {
       c.status(411);
       return c.json({
         message: "error while signing up",
-        error:e
+        error: e,
       });
     }
   } else {

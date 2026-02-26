@@ -11,7 +11,6 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
 }
         
 
@@ -25,14 +24,20 @@ model User {
   donations Donation[]
 }
 
+enum DonationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model Donation {
-  id       String   @id @default(uuid())
-  name     String?
-  amount   Int
-  imgurl   String
-  Status   Boolean  @default(false)
-  createdAt String  @default("01-01-2025")
-  author   User     @relation(fields: [authorId], references: [id])
+  id        String         @id @default(uuid())
+  name      String?
+  amount    Int
+  imgurl    String
+  status    DonationStatus @default(PENDING)
+  createdAt String         @default("01-01-2025")
+  author    User           @relation(fields: [authorId], references: [id])
   authorId  String
 }
 
