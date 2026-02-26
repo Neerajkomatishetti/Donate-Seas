@@ -8,7 +8,6 @@ import { useEffect, useState, useCallback } from "react";
 import {
   CheckCircle2,
   Clock,
-  MapPin,
   Wallet,
   Calendar,
   User,
@@ -74,7 +73,7 @@ const Donations = () => {
 
   useEffect(() => {
     fetchdonations();
-  }, [status]);
+  }, [status, fetchdonations]);
 
   const handleAction = async (id: string, action: "Approve" | "Reject") => {
     try {
