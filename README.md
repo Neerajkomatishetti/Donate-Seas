@@ -44,19 +44,19 @@ cd ../donate-os && npm install
 
 ### Home page
 
-<img src="./Public/Screenshot 2025-10-22 104250.png">
+<img src="./Public/Home.png">
 
 ### Donation
 
-<img src="./Public/Screenshot 2025-10-22 104302.png">
+<img src="./Public/Account.png">
 
 ### User Donations(Loading)
 
-<img src="./Public/Screenshot 2025-10-22 104312.png">
+<img src="./Public/DonationsLoading.png">
 
 ### Donations(user)
 
-<img src="./Public/Screenshot 2025-10-22 104317.png">
+<img src="./Public/Mydonations.png">
 
 ### ImagePreview(uses PrimeReact Image cpnt)
 
@@ -64,19 +64,19 @@ cd ../donate-os && npm install
 
 ### Donations(Admin)
 
-<img src="./Public/Screenshot 2025-10-22 104332.png">
+<img src="./Public/Admin.png">
 
 ### Login
 
-<img src="./Public/Screenshot 2025-10-22 104350.png">
+<img src="./Public/Login.png">
 
 ### Signup
 
-<img src="./Public/Screenshot 2025-10-22 104402.png">
+<img src="./Public/Signup.png">
 
 ### Donation Registration
 
-<img src="./Public/Screenshot 2025-10-22 104428.png">
+<img src="./Public/DonateRegister.png">
 
 ### 2) Environment & Config
 
