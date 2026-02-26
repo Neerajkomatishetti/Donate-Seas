@@ -8,7 +8,7 @@ import {
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
   
-  export function Alert(dialog:string) {
+  export function Alert() {
     return (
       <AlertDialog>
         <AlertDialogContent>
